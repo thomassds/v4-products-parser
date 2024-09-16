@@ -13,33 +13,26 @@ export interface IDBConnection {
 
 @Service()
 export class TypeORMConnection implements IDBConnection {
-    private _instance: DataSource | undefined;
+    private _instance: DataSource;
 
-    async connect(): Promise<void> {
-        const entitiesDir = path.join("dist", "domain", "entities", "*.js");
-
+    constructor() {
         this._instance = new DataSource({
             type: InfraEnvs.database.type as DatabaseType,
             url: InfraEnvs.database.ulr,
             logging: false,
-            entities: [entitiesDir],
+            entities: [path.join("dist", "domain", "entities", "*.js")],
         });
+    }
 
+    async connect(): Promise<void> {
         await this._instance.initialize();
     }
 
     async disconnect(): Promise<void> {
-        if (this._instance) {
-            await this._instance.destroy();
-        } else {
-            throw new Error("Database connection is not initialized.");
-        }
+        await this._instance.destroy();
     }
 
     public get instance(): DataSource {
-        if (!this._instance) {
-            throw new Error("Database connection is not initialized.");
-        }
         return this._instance;
     }
 }

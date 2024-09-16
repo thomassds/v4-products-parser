@@ -2,21 +2,36 @@ import express, { Express } from "express";
 
 import "express-async-errors";
 import cors from "cors";
-import Container from "typedi";
+import Container, { Service } from "typedi";
 import { TypeORMConnection } from "./database/connection";
 import { CronJob } from "../schedule";
+import { AppRouters } from "../interfaces/routes";
+import { AppCors } from "../interfaces/cors";
+import { AppBodyParse } from "../interfaces/bodyParse";
 
+@Service()
 export class App {
-    static async build() {
-        const app: Express = express();
-        const database = Container.get(TypeORMConnection);
-        const cronJob = Container.get(CronJob);
+    private app: Express;
+    private database: TypeORMConnection;
+    private cronJob: CronJob;
 
-        await database.connect();
+    constructor() {
+        this.app = express();
+        this.database = Container.get(TypeORMConnection);
+        this.cronJob = Container.get(CronJob);
+    }
 
-        app.use(cors());
+    async build() {
+        await this.database.connect();
 
-        cronJob.execute();
-        return app;
+        AppBodyParse.load(this.app);
+
+        AppCors.load(this.app);
+
+        AppRouters.load(this.app);
+
+        this.cronJob.load();
+
+        return this.app;
     }
 }

@@ -10,8 +10,8 @@ export class CronJob {
         this.dataImportManager = Container.get(DataImportManager);
     }
     // "0 20 * * *"
-    execute() {
-        schedule.scheduleJob("*/6 * * * * *", async () => {
+    load() {
+        schedule.scheduleJob("* * * * *", async () => {
             await this.dataImportManager.execute();
         });
     }
