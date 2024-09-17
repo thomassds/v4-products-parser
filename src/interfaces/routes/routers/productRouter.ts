@@ -16,6 +16,10 @@ export class ProductRouter {
             controller.handleSelectAll(req, res)
         );
 
+        router.get("/products/:id", (req, res) =>
+            controller.handleSelect(req, res)
+        );
+
         return router;
     }
 }

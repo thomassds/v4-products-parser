@@ -28,11 +28,11 @@ export class SelectAllProductRepository implements ISelectAllProductRepository {
                 data,
                 totalRows: count,
                 totalPages: options.skip ? Math.ceil(count / options.skip) : 1,
-                perPage: data.length,
-                page: options.take || 0,
+                perPage: options.take || data.length,
+                page: (options?.skip || 0) / (options?.take || 0) + 1,
             };
         } catch (error) {
-            throw new DatabaseError("Fail to Register this Product");
+            throw new DatabaseError("Fail to get all products");
         }
     }
 }

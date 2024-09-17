@@ -6,7 +6,7 @@ export class AppCors {
         try {
             app.use(cors());
         } catch (error) {
-            console.log(error);
+            console.info(error);
         }
     }
 }

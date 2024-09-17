@@ -5,11 +5,14 @@ import { Inject, Service } from "typedi";
 import {
     CreateProductUseCase,
     SelectAllProductUseCase,
+    SelectProductUseCase,
 } from "../../application/useCases";
 import {
     ICreateProductUseCase,
     ISelectAllProductUseCase,
+    ISelectProductUseCase,
 } from "../../application/interfaces";
+import { ObjectId } from "mongodb";
 
 @Service()
 export class ProductController {
@@ -17,7 +20,9 @@ export class ProductController {
         @Inject(() => CreateProductUseCase)
         private readonly createProductUseCase: ICreateProductUseCase,
         @Inject(() => SelectAllProductUseCase)
-        private readonly selectAllProductUseCase: ISelectAllProductUseCase
+        private readonly selectAllProductUseCase: ISelectAllProductUseCase,
+        @Inject(() => SelectProductUseCase)
+        private readonly selectProductUseCase: ISelectProductUseCase
     ) {}
 
     async handleCreate(req: Request, res: Response) {
@@ -40,6 +45,14 @@ export class ProductController {
             page: query.page,
             perPage: query.perPage,
         });
+
+        return res.status(200).json(response);
+    }
+
+    async handleSelect(req: Request, res: Response) {
+        const { id } = req.params;
+
+        const response = await this.selectProductUseCase.execute(id);
 
         return res.status(200).json(response);
     }

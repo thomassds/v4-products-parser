@@ -5,6 +5,6 @@ export class DataImportManager {
     constructor() {}
 
     async execute() {
-        return console.log("teste");
+        return console.info("Definir implementação da função aqui");
     }
 }

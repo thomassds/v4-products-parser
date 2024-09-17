@@ -26,7 +26,7 @@ export class AppRouters {
 
             app.use(router);
         } catch (error) {
-            console.log(error);
+            console.info(error);
         }
     }
 

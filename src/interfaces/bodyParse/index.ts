@@ -5,7 +5,7 @@ export class AppBodyParse {
         try {
             app.use(express.json());
         } catch (error) {
-            console.log(error);
+            console.info(error);
         }
     }
 }
