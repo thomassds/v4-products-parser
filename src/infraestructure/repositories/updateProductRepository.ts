@@ -1,13 +1,13 @@
 import Container, { Service } from "typedi";
 import { Product } from "../../domain/entities";
-import { ISelectProductRepository } from "../../domain/repositories";
-import { Repository } from "typeorm";
+import { IUpdateProductRepository } from "../../domain/repositories";
+import { ObjectId, Repository } from "typeorm";
 import { TypeORMConnection } from "../database/connection";
 import { DatabaseError } from "../../interfaces/exceptions";
-import { ObjectId } from "mongodb";
+import { QueryDeepPartialEntity } from "typeorm/query-builder/QueryPartialEntity";
 
 @Service()
-export class SelectProductRepository implements ISelectProductRepository {
+export class UpdateProductRepository implements IUpdateProductRepository {
     private repository: Repository<Product>;
 
     private dataSource: TypeORMConnection;
@@ -18,16 +18,16 @@ export class SelectProductRepository implements ISelectProductRepository {
         this.repository = this.dataSource.instance.getRepository(Product);
     }
 
-    async execute(id: ObjectId): Promise<Product> {
+    async execute(
+        id: ObjectId,
+        data: QueryDeepPartialEntity<Product>
+    ): Promise<void> {
         try {
-            const response = await this.repository.findOneByOrFail({
-                _id: id,
-            });
+            await this.repository.update({ _id: id }, data);
 
-            return response;
+            return;
         } catch (error) {
-            console.info(error);
-            throw new DatabaseError("Fail to get this product");
+            throw new DatabaseError("Fail to update this product");
         }
     }
 }

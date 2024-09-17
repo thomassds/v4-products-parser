@@ -20,6 +20,14 @@ export class ProductRouter {
             controller.handleSelect(req, res)
         );
 
+        router.put("/products/:id", (req, res) =>
+            controller.handleUpdate(req, res)
+        );
+
+        router.delete("/products/:id", (req, res) =>
+            controller.handleDelete(req, res)
+        );
+
         return router;
     }
 }

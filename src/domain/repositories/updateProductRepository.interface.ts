@@ -3,8 +3,5 @@ import { Product } from "../entities";
 import { QueryDeepPartialEntity } from "typeorm/query-builder/QueryPartialEntity";
 
 export interface IUpdateProductRepository {
-    execute(
-        id: ObjectId,
-        data: QueryDeepPartialEntity<Product>
-    ): Promise<Product>;
+    execute(id: ObjectId, data: QueryDeepPartialEntity<Product>): Promise<void>;
 }

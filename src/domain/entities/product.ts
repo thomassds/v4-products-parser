@@ -5,7 +5,7 @@ import { ProductStatusEnum } from "../enums/ProductEnum";
 @Entity("products")
 export class Product {
     @ObjectIdColumn()
-    id?: ObjectId;
+    _id?: ObjectId;
 
     @Column()
     code: number;

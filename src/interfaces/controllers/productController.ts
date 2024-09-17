@@ -6,13 +6,16 @@ import {
     CreateProductUseCase,
     SelectAllProductUseCase,
     SelectProductUseCase,
+    UpdateProductUseCase,
+    DeleteProductUseCase,
 } from "../../application/useCases";
 import {
     ICreateProductUseCase,
     ISelectAllProductUseCase,
     ISelectProductUseCase,
+    IUpdateProductUseCase,
+    IDeleteProductUseCase,
 } from "../../application/interfaces";
-import { ObjectId } from "mongodb";
 
 @Service()
 export class ProductController {
@@ -22,7 +25,11 @@ export class ProductController {
         @Inject(() => SelectAllProductUseCase)
         private readonly selectAllProductUseCase: ISelectAllProductUseCase,
         @Inject(() => SelectProductUseCase)
-        private readonly selectProductUseCase: ISelectProductUseCase
+        private readonly selectProductUseCase: ISelectProductUseCase,
+        @Inject(() => UpdateProductUseCase)
+        private readonly updateProductUseCase: IUpdateProductUseCase,
+        @Inject(() => DeleteProductUseCase)
+        private readonly deleteProductUseCase: IDeleteProductUseCase
     ) {}
 
     async handleCreate(req: Request, res: Response) {
@@ -53,6 +60,22 @@ export class ProductController {
         const { id } = req.params;
 
         const response = await this.selectProductUseCase.execute(id);
+
+        return res.status(200).json(response);
+    }
+
+    async handleUpdate(req: Request, res: Response) {
+        const { id } = req.params;
+
+        const response = await this.updateProductUseCase.execute(id, req.body);
+
+        return res.status(200).json(response);
+    }
+
+    async handleDelete(req: Request, res: Response) {
+        const { id } = req.params;
+
+        const response = await this.deleteProductUseCase.execute(id);
 
         return res.status(200).json(response);
     }
