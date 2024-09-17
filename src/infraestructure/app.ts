@@ -30,6 +30,8 @@ export class App {
 
         AppRouters.load(this.app);
 
+        AppRouters.loadErrors(this.app);
+
         this.cronJob.load();
 
         return this.app;

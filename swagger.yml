@@ -1,0 +1,367 @@
+openapi: 3.0.0
+
+info:
+    title: "V4 Products Parser Api"
+    description: "Realizar um parse da base de dados Open Food Facts através de JOB utilizando DDD, SOLID e Design Patterns"
+    version: "1.0.0"
+    contact:
+        email: "thomasdomingos@hotmail.com"
+    license:
+        name: "Apache 2.0"
+        url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+
+paths:
+    /api/products/{id}:
+        get:
+            tags:
+                - Products
+            summary: "Obtém um produto pelo ID"
+            description: "Este endpoint retorna os detalhes de um produto baseado no seu ID."
+            operationId: "getProduct"
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  description: "ID do produto a ser buscado"
+                  schema:
+                      type: string
+                      example: "64d5ffde5b3f4b7d839e1234"
+            responses:
+                "200":
+                    description: "Produto encontrado com sucesso"
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    id:
+                                        type: string
+                                        example: "64d5ffde5b3f4b7d839e1234"
+                                    code:
+                                        type: integer
+                                        example: 12345
+                                    status:
+                                        type: string
+                                        example: "AVAILABLE"
+                                    url:
+                                        type: string
+                                        example: "http://example.com/product"
+                                    creator:
+                                        type: string
+                                        example: "John Doe"
+                                    productName:
+                                        type: string
+                                        example: "Produto Exemplo"
+                "401":
+                    $ref: "#/components/responses/Unauthorized"
+                "403":
+                    $ref: "#/components/responses/Forbidden"
+                "404":
+                    $ref: "#/components/responses/NotFound"
+                "500":
+                    $ref: "#/components/responses/InternalError"
+
+            security:
+                - bearerAuth: []
+
+        put:
+            tags:
+                - Products
+            summary: "Atualiza um produto existente"
+            description: "Este endpoint permite atualizar um produto existente no sistema. O payload é o mesmo do endpoint de criação, mas nenhum campo é obrigatório."
+            operationId: "updateProduct"
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  description: "ID do produto a ser atualizado"
+                  schema:
+                      type: string
+                      example: "64d5ffde5b3f4b7d839e1234"
+            requestBody:
+                required: false
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                code:
+                                    type: integer
+                                    example: 12345
+                                status:
+                                    type: string
+                                    enum:
+                                        - AVAILABLE
+                                        - UNAVAILABLE
+                                    example: "AVAILABLE"
+                                importedT:
+                                    type: string
+                                    format: date-time
+                                    example: "2024-09-15T13:45:30.000Z"
+                                url:
+                                    type: string
+                                    example: "http://example.com/product"
+                                creator:
+                                    type: string
+                                    example: "John Doe"
+                                productName:
+                                    type: string
+                                    example: "Produto Exemplo"
+            responses:
+                "204":
+                    description: "Produto atualizado com sucesso"
+                "401":
+                    $ref: "#/components/responses/Unauthorized"
+                "403":
+                    $ref: "#/components/responses/Forbidden"
+                "404":
+                    $ref: "#/components/responses/NotFound"
+                "500":
+                    $ref: "#/components/responses/InternalError"
+
+            security:
+                - bearerAuth: []
+
+        delete:
+            tags:
+                - Products
+            summary: "Deleta um produto pelo ID"
+            description: "Este endpoint deleta um produto baseado no seu ID."
+            operationId: "deleteProduct"
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  description: "ID do produto a ser deletado"
+                  schema:
+                      type: string
+                      example: "64d5ffde5b3f4b7d839e1234"
+            responses:
+                "204":
+                    description: "Produto deletado com sucesso (sem retorno de conteúdo)"
+                "401":
+                    $ref: "#/components/responses/Unauthorized"
+                "403":
+                    $ref: "#/components/responses/Forbidden"
+                "404":
+                    $ref: "#/components/responses/NotFound"
+                "500":
+                    $ref: "#/components/responses/InternalError"
+
+            security:
+                - bearerAuth: []
+
+    /api/products:
+        post:
+            tags:
+                - Products
+            summary: "Cria um novo produto"
+            description: "Este endpoint permite criar um novo produto no sistema."
+            operationId: "createProduct"
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                code:
+                                    type: integer
+                                    example: 12345
+                                status:
+                                    type: string
+                                    enum:
+                                        - AVAILABLE
+                                        - UNAVAILABLE
+                                    example: "AVAILABLE"
+                                importedT:
+                                    type: string
+                                    format: date-time
+                                    example: "2024-09-15T13:45:30.000Z"
+                                url:
+                                    type: string
+                                    example: "http://example.com/product"
+                                creator:
+                                    type: string
+                                    example: "John Doe"
+                                productName:
+                                    type: string
+                                    example: "Produto Exemplo"
+            responses:
+                "201":
+                    description: "Produto criado com sucesso"
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    message:
+                                        type: string
+                                        example: "Produto criado com sucesso!"
+                                    productId:
+                                        type: string
+                                        example: "64d5ffde5b3f4b7d839e1234"
+                "400":
+                    $ref: "#/components/responses/BadRequest"
+                "401":
+                    $ref: "#/components/responses/Unauthorized"
+                "403":
+                    $ref: "#/components/responses/Forbidden"
+                "500":
+                    $ref: "#/components/responses/InternalError"
+
+            security:
+                - bearerAuth: []
+        get:
+          tags:
+            - Products
+          summary: "Obtém uma lista de produtos"
+          description: "Este endpoint retorna uma lista paginada de produtos com base nos parâmetros fornecidos."
+          operationId: "getProducts"
+          parameters:
+            - name: page
+              in: query
+              required: true
+              description: "Número da página de resultados para paginação."
+              schema:
+                type: integer
+                example: 1
+                minimum: 1
+            - name: perPage
+              in: query
+              required: true
+              description: "Número de produtos por página para paginação."
+              schema:
+                type: integer
+                example: 10
+                minimum: 1
+            - name: productName
+              in: query
+              description: "Nome do produto para filtrar resultados."
+              schema:
+                type: string
+          security:
+            - bearerAuth: []
+          responses:
+            '200':
+              description: "Lista de produtos retornada com sucesso."
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            _id:
+                              type: string
+                              example: "66e7cf44d4f1c84f35ef1215"
+                            code:
+                              type: integer
+                              example: 20221126
+                            status:
+                              type: string
+                              example: "trash"
+                            importedT:
+                              type: string
+                              format: date-time
+                              example: "2020-02-07T16:00:00.000Z"
+                            url:
+                              type: string
+                              example: "https://world.openfoodfacts.org/product/20221126"
+                            creator:
+                              type: string
+                              example: "securita"
+                            createdT:
+                              type: integer
+                              example: 1415302075
+                            lastModifiedT:
+                              type: integer
+                              example: 1572265837
+                            productName:
+                              type: string
+                              example: "Laranja quadradas 2"
+                            quantity:
+                              type: string
+                              example: "380 g (6 x 2 u.)"
+                            brands:
+                              type: string
+                              example: "La Cestera"
+                            categories:
+                              type: string
+                              example: "Lanches comida, Lanches doces, Biscoitos e Bolos, Bolos, Madalenas"
+                            labels:
+                              type: string
+                              example: "Contem gluten, Contém derivados de ovos, Contém ovos"
+                            cities:
+                              type: string
+                              example: ""
+                            purchasePlaces:
+                              type: string
+                              example: "Braga,Portugal"
+                            stores:
+                              type: string
+                              example: "Lidl"
+                            ingredientsText:
+                              type: string
+                              example: "farinha de trigo, açúcar, óleo vegetal de girassol, clara de ovo, ovo, humidificante (sorbitol), levedantes químicos (difosfato dissódico, hidrogenocarbonato de sódio), xarope de glucose-frutose, sal, aroma"
+                            traces:
+                              type: string
+                              example: "Frutos de casca rija,Leite,Soja,Sementes de sésamo,Produtos à base de sementes de sésamo"
+                            servingSize:
+                              type: string
+                              example: "madalena 31.7 g"
+                            servingQuantity:
+                              type: number
+                              example: 31.7
+                            nutriscoreScore:
+                              type: integer
+                              example: 17
+                            nutriscoreGrade:
+                              type: string
+                              example: "d"
+                            mainCategory:
+                              type: string
+                              example: "en:madeleines"
+                            imageUrl:
+                              type: string
+                              example: "https://static.openfoodfacts.org/images/products/20221126/front_pt.5.400.jpg"
+                      totalRows:
+                        type: integer
+                        example: 22
+                      totalPages:
+                        type: integer
+                        example: 1
+                      perPage:
+                        type: integer
+                        example: 10
+                      page:
+                        type: integer
+                        example: 1
+            '401':
+              description: "Não autorizado, token Bearer ausente ou inválido."
+            '400':
+              description: "Requisição malformada, verifique os parâmetros fornecidos."
+          security:
+            - bearerAuth: []
+
+components:
+    securitySchemes:
+        bearerAuth:
+            type: http
+            scheme: bearer
+            bearerFormat: JWT
+
+    responses:
+        Unauthorized:
+            description: "Token de autenticação inválido ou ausente"
+        Forbidden:
+            description: "Acesso negado para este recurso"
+        NotFound:
+            description: "Recurso não encontrado"
+        InternalError:
+            description: "Erro interno no servidor"
+        BadRequest:
+            description: "Requisição malformada ou dados inválidos"

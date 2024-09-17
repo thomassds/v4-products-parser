@@ -7,6 +7,9 @@ import express, {
     json,
 } from "express";
 
+import * as swaggerUi from "swagger-ui-express";
+import * as YAMLJS from "yamljs";
+
 import { BusinessError } from "../exceptions/businessError";
 import { UnprocessedEntityError } from "../exceptions/unprocessedEntityError";
 import { AppError } from "../exceptions/appError";
@@ -24,13 +27,24 @@ export class AppRouters {
 
             router.use("/api", getRoutes());
 
+            const swaggerDocument = YAMLJS.load("./swagger.yml");
+
+            router.use("^/$", (req, res) => {
+                return res.redirect("/api-docs");
+            });
+            router.use(
+                "/api-docs",
+                swaggerUi.serve,
+                swaggerUi.setup(swaggerDocument)
+            );
+
             app.use(router);
         } catch (error) {
             console.info(error);
         }
     }
 
-    static handleError(app: Express) {
+    static loadErrors(app: Express) {
         app.use(
             (
                 error: Error,

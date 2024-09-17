@@ -4,6 +4,7 @@ export class InfraEnvs {
     static readonly server = {
         environment: process.env.NODE_ENV || Environments.DEVELOP,
         port: Number(process.env.PORT || "3333"),
+        authSecret: process.env.AUTH_SECRET,
     };
 
     static readonly database = {
